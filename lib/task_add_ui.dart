@@ -41,10 +41,6 @@ class _AddTaskPageState extends State<AddTaskPage> {
                 controller: _responsibleController,
                 decoration: const InputDecoration(labelText: 'Responsible'),
               ),
-              TextField(
-                controller: _statusController,
-                decoration: const InputDecoration(labelText: 'Status'),
-              ),
               Row(
                 children: [
                   const Text('Deadline: '),
@@ -71,7 +67,7 @@ class _AddTaskPageState extends State<AddTaskPage> {
                     id: 0,
                     titulo: _titleController.text,
                     descricao: _descriptionController.text,
-                    responsavel: 0,
+                    responsavel: int.parse(_statusController.text),
                     pendente: true,
                     dataLimite: deadline,
                   );

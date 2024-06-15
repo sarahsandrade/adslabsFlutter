@@ -53,7 +53,7 @@ class TaskProvider extends ChangeNotifier {
     const url = 'http://127.0.0.1:3000/tarefas/';
     print("aaa");
     final response = await http.get(Uri.parse(url));
-    print("aaa");
+    print(response.body);
     if (response.statusCode == 200) {
       final data = json.decode(response.body);
       final List<dynamic> taskData = data['tarefas'];
@@ -66,7 +66,7 @@ class TaskProvider extends ChangeNotifier {
   }
 
   Future<void> addTask(Task task) async {
-    const url = 'http://192.168.175.100:3000/tarefas';
+    const url = 'http://127.0.0.1:3000/tarefas';
     final response = await http.post(
       Uri.parse(url),
       headers: {"Content-Type": "application/json"},
@@ -83,7 +83,7 @@ class TaskProvider extends ChangeNotifier {
   }
 
   Future<void> deleteTask(int taskId) async {
-    final url = 'http://192.168.175.100:3000/tarefas/$taskId';
+    final url = 'http://127.0.0.1:3000/tarefas/$taskId';
     final response = await http.delete(Uri.parse(url));
     if (response.statusCode != 200) {
       throw Exception('Failed to delete task');
@@ -94,7 +94,7 @@ class TaskProvider extends ChangeNotifier {
   }
 
   Future<void> editTask(int taskId, Task updatedTask) async {
-    final url = 'http://192.168.175.100:3000/tarefas/$taskId';
+    final url = 'http://127.0.0.1:3000/tarefas/$taskId';
     final response = await http.put(
       Uri.parse(url),
       headers: {"Content-Type": "application/json"},
