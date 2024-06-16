@@ -8,7 +8,7 @@ class Task {
   int id;
   final String titulo;
   final String descricao;
-  final int responsavel;
+  final int responsaveiId;
   final bool pendente;
   final DateTime dataLimite;
 
@@ -16,7 +16,7 @@ class Task {
     required this.id,
     required this.titulo,
     required this.descricao,
-    required this.responsavel,
+    required this.responsaveiId,
     required this.pendente,
     required this.dataLimite,
   });
@@ -25,7 +25,7 @@ class Task {
         id: json['id'],
         titulo: json['titulo'],
         descricao: json['descricao'],
-        responsavel: json['responsaveiId'],
+        responsaveiId: json['responsaveiId'],
         pendente: json['pendente'],
         dataLimite: DateTime.parse(json['data_limite']),
       );
@@ -34,14 +34,14 @@ class Task {
         'id': id,
         'titulo': titulo,
         'descricao': descricao,
-        'responsaveiId': responsavel,
+        'responsaveiId': responsaveiId,
         'pendente': pendente,
         'data_limite': dataLimite.toIso8601String(),
       };
   Map<String, dynamic> toJsonForAdd() => {
         'titulo': titulo,
         'descricao': descricao,
-        'responsavel': responsavel,
+        'responsaveiId': responsaveiId,
         'status': pendente,
         'data_limite': dataLimite.toIso8601String(),
       };
@@ -51,9 +51,7 @@ class TaskProvider extends ChangeNotifier {
   List<Task> tasks = [];
   Future<void> fetchTasks() async {
     const url = 'http://127.0.0.1:3000/tarefas/';
-    print("aaa");
     final response = await http.get(Uri.parse(url));
-    print(response.body);
     if (response.statusCode == 200) {
       final data = json.decode(response.body);
       final List<dynamic> taskData = data['tarefas'];
@@ -62,7 +60,6 @@ class TaskProvider extends ChangeNotifier {
     } else {
       throw Exception('Failed to load tasks');
     }
-    print("aaa");
   }
 
   Future<void> addTask(Task task) async {
@@ -72,9 +69,7 @@ class TaskProvider extends ChangeNotifier {
       headers: {"Content-Type": "application/json"},
       body: json.encode(task.toJsonForAdd()),
     );
-    if (response.statusCode != 200) {
-      print('Response status code: ${response.statusCode}');
-      print('Response body: ${response.body}');
+    if (response.statusCode != 201) {
       throw Exception('Failed to add task');
     } else {
       tasks.add(task);

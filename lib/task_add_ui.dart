@@ -14,7 +14,6 @@ class _AddTaskPageState extends State<AddTaskPage> {
   final TextEditingController _titleController = TextEditingController();
   final TextEditingController _descriptionController = TextEditingController();
   final TextEditingController _responsibleController = TextEditingController();
-  final TextEditingController _statusController = TextEditingController();
   DateTime deadline = DateTime.now();
 
   @override
@@ -63,14 +62,16 @@ class _AddTaskPageState extends State<AddTaskPage> {
               ),
               ElevatedButton(
                 onPressed: () {
+                  print("aaaa");
                   final task = Task(
                     id: 0,
                     titulo: _titleController.text,
                     descricao: _descriptionController.text,
-                    responsavel: int.parse(_statusController.text),
+                    responsaveiId: int.parse(_responsibleController.text),
                     pendente: true,
                     dataLimite: deadline,
                   );
+                  print("aaaa");
                   taskProvider.addTask(task).then((_) {
                     Navigator.pop(context);
                     taskProvider.fetchTasks();

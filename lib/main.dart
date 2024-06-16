@@ -68,7 +68,7 @@ class _MyHomePageState extends State<MyHomePage> {
                         children: [
                           const Icon(Icons.person),
                           const SizedBox(width: 5),
-                          Text('Responsavel: ${task.responsavel}'),
+                          Text('Responsavel: ${task.responsaveiId}'),
                         ],
                       ),
                       Row(
