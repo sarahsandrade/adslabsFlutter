@@ -2,7 +2,6 @@ import 'dart:convert';
 
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
-import 'package:first_app/consts.dart';
 
 class Task {
   int id;
@@ -49,10 +48,17 @@ class Task {
 
 class TaskProvider extends ChangeNotifier {
   List<Task> tasks = [];
-  Future<void> fetchTasks() async {
-    const url = 'http://127.0.0.1:3000/tarefas/';
+  Future<void> fetchTasks(int? responsaveiId) async {
+    String url;
+    if(responsaveiId == null){
+      url = 'http://127.0.0.1:3000/tarefas/';
+    }
+    else{
+      url = 'http://127.0.0.1:3000/tarefas/?responsaveiId=$responsaveiId';
+    }
     final response = await http.get(Uri.parse(url));
     if (response.statusCode == 200) {
+      print(response.statusCode);
       final data = json.decode(response.body);
       final List<dynamic> taskData = data['tarefas'];
       tasks = taskData.map((item) => Task.fromJson(item)).toList();
@@ -63,6 +69,7 @@ class TaskProvider extends ChangeNotifier {
   }
 
   Future<void> addTask(Task task) async {
+    print(task.dataLimite);
     const url = 'http://127.0.0.1:3000/tarefas';
     final response = await http.post(
       Uri.parse(url),
@@ -70,6 +77,8 @@ class TaskProvider extends ChangeNotifier {
       body: json.encode(task.toJsonForAdd()),
     );
     if (response.statusCode != 201) {
+      print ('Response status code: ${response.statusCode}');
+      print ('Response body: ${response.body}');
       throw Exception('Failed to add task');
     } else {
       tasks.add(task);
@@ -89,6 +98,8 @@ class TaskProvider extends ChangeNotifier {
   }
 
   Future<void> editTask(int taskId, Task updatedTask) async {
+    print(taskId);
+    print(updatedTask);
     final url = 'http://127.0.0.1:3000/tarefas/$taskId';
     final response = await http.put(
       Uri.parse(url),

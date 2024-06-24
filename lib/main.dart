@@ -1,8 +1,14 @@
-import 'package:first_app/task_add_ui.dart';
+import 'package:first_app/Responsible/Responsible_edit_ui.dart';
+import 'package:first_app/responsible/responsible_api.dart';
+import 'package:first_app/responsible/responsible_page.dart';
+import 'package:first_app/responsible/responsible_tasks.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
-import 'package:first_app/tasks_api.dart';
-import 'package:intl/intl.dart';
+import 'package:first_app/task/tasks_api.dart';
+import 'package:first_app/task/task_edit_ui.dart';
+import 'task/task_page.dart';
+
 
 void main() {
   runApp(const MyApp());
@@ -13,110 +19,84 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider<TaskProvider>(
-        create: (_) => TaskProvider(),
-        child: MaterialApp(
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (context) => TaskProvider()),
+       ChangeNotifierProvider(create: (context) => ResponsibleProvider()),
+      ],child: MaterialApp(
           title: 'Flutter Demo',
           theme: ThemeData(
-            colorScheme: ColorScheme.fromSeed(seedColor: Color.fromARGB(255, 60, 7, 204)),
+            colorScheme: ColorScheme.fromSeed(seedColor: const Color.fromARGB(255, 81, 6, 209)),
             useMaterial3: true,
           ),
-          home: const MyHomePage(title: 'Flutter Demo Home Page'),
-        ));
+          initialRoute: '/',
+          routes: {
+            '/':(context) => HomePage(),
+            '/task':(context) => TaskPage(),
+            '/taskedit':(context) => EditTaskPage(),
+            '/responsible':(context) => ResponsiblePage(),
+            '/responsibleedit':(context) => EditResponsiblePage(),
+            '/responsibletasks':(context) => ResponsibleTasks(),
+          },
+        )
+    );
   }
 }
-
-class MyHomePage extends StatefulWidget {
-  final String title;
-  const MyHomePage({super.key, required this.title});
-
+class HomePage extends StatefulWidget {
+  const HomePage({super.key});
+  final String title = 'Home Page';
   @override
-  State<MyHomePage> createState() => _MyHomePageState();
+  State<HomePage> createState() => _HomePageState();
 }
-
-class _MyHomePageState extends State<MyHomePage> {
-  @override
-  void initState() {
-    super.initState();
-    Provider.of<TaskProvider>(context, listen: false).fetchTasks();
-  }
-
+class _HomePageState extends State<HomePage>{
   @override
   Widget build(BuildContext context) {
-    final taskProvider = Provider.of<TaskProvider>(context);
-
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         title: Text(widget.title),
       ),
-      body: taskProvider.tasks.isEmpty
-          ? const Center(child: CircularProgressIndicator())
-          : ListView.builder(
-              itemCount: taskProvider.tasks.length,
-              itemBuilder: (context, index) {
-                final task = taskProvider.tasks[index];
-                return ListTile(
-                  title: Text(
-                    task.titulo,
-                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                  ),
-                  // subtitle: Text('${task.status} - ${task.priority}'),
-                  subtitle: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            Column(
+              children: [
+                Center(
+                  child: Column(
                     children: [
-                      Row(
-                        children: [
-                          const Icon(Icons.person),
-                          const SizedBox(width: 5),
-                          Text('Responsavel: ${task.responsaveiId}'),
-                        ],
+                      Padding(
+                        padding: const EdgeInsets.all(30.0),
+                        child: SizedBox(
+                          height: 50,
+                          child: ElevatedButton(onPressed: (){
+                            Navigator.pushNamed(context, '/task');
+                          },
+                           child: Center(child: Text('Task Page'),
+                          )),
+                        ),
                       ),
-                      Row(
-                        children: [
-                          const Icon(Icons.calendar_today),
-                          const SizedBox(width: 5),
-                          Text(
-                              'Data_limite: ${DateFormat('yyyy-MM-dd').format(task.dataLimite)}'),
-                        ],
-                      ),
-                      Row(
-                        children: [
-                          const Icon(Icons.work),
-                          const SizedBox(width: 5),
-                          Text('${task.pendente}'),
-                        ],
-                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(30.0),
+                        child: SizedBox(
+                          height: 50,
+                          child: ElevatedButton(
+                            onPressed: (){Navigator.pushNamed(context, '/responsible');}, 
+                            child: Center(child: Text('Responsible Page'),
+                            ),
+                          ),
+                        ),
+                      )
                     ],
                   ),
-                  trailing: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      IconButton(
-                        icon: const Icon(Icons.edit),
-                        onPressed: () => navigateToEditTask(task.id),
-                      ),
-                      IconButton(
-                        icon: const Icon(Icons.delete),
-                        onPressed: () => taskProvider.deleteTask(task.id),
-                      ),
-                    ],
-                  ),
-                );
-              },
+                )
+              ],
             ),
-      floatingActionButton: FloatingActionButton(
-        child: const Icon(Icons.add),
-        onPressed: () => navigateToAddTask(),
+          ],
+        ),
       ),
-    );
-  }
-
-  void navigateToAddTask() {
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => const AddTaskPage()),
     );
   }
 }
 
-void navigateToEditTask(int taskId) {}
+  
